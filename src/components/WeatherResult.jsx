@@ -25,7 +25,7 @@ function WeatherResult({ weather, loading, error }) {
       <div className="panel-heading">
         <div>
           <h2>Resultado</h2>
-          <p>Resumo e previsão para o local escolhido.</p>
+          <p>Resumo e previsao para o local escolhido.</p>
         </div>
         <span className={`risk-badge risk-${risk.level}`}>{risk.label}</span>
       </div>
@@ -52,8 +52,8 @@ function WeatherResult({ weather, loading, error }) {
               </div>
             </div>
             <div className="temperature">
-              <span>{current.temperature_2m.toFixed(1)}°C</span>
-              <p>Sensação: {current.apparent_temperature.toFixed(1)}°C</p>
+              <span>{current.temperature_2m.toFixed(1)}C</span>
+              <p>Sensacao: {current.apparent_temperature.toFixed(1)}C</p>
             </div>
           </div>
 
@@ -61,9 +61,9 @@ function WeatherResult({ weather, loading, error }) {
             <StatCard label="Umidade" value={`${current.relative_humidity_2m}%`} />
             <StatCard label="Vento" value={`${current.wind_speed_10m} km/h`} />
             <StatCard label="Chuva agora" value={`${current.precipitation.toFixed(1)} mm`} />
-            <StatCard label="UV máx. hoje" value={weather.daily.uv_index_max[0].toFixed(1)} />
+            <StatCard label="UV max. hoje" value={weather.daily.uv_index_max[0].toFixed(1)} />
             <StatCard label="Nascer do sol" value={formatHour(weather.daily.sunrise[0])} />
-            <StatCard label="Pôr do sol" value={formatHour(weather.daily.sunset[0])} />
+            <StatCard label="Por do sol" value={formatHour(weather.daily.sunset[0])} />
           </div>
 
           <div className="weather-map">
@@ -72,7 +72,7 @@ function WeatherResult({ weather, loading, error }) {
 
           {weather.hourly && (
             <div className="hourly-section">
-              <h3>Previsão do dia</h3>
+              <h3>Previsao do dia</h3>
               <div className="hourly-slider-wrapper">
                 <div className="hourly-slider">
                   {weather.hourly.time.slice(0, 24).map((hour, index) => {
@@ -81,7 +81,7 @@ function WeatherResult({ weather, loading, error }) {
                       <div key={hour} className="hourly-card">
                         <span aria-hidden="true">{hourlyInfo.icon}</span>
                         <strong>{formatHour(hour)}</strong>
-                        <p>{weather.hourly.temperature_2m[index].toFixed(1)}°C</p>
+                        <p>{weather.hourly.temperature_2m[index].toFixed(1)}C</p>
                         <p>{weather.hourly.precipitation_probability[index]}% chuva</p>
                       </div>
                     )
@@ -92,7 +92,7 @@ function WeatherResult({ weather, loading, error }) {
           )}
 
           <div className="forecast-section">
-            <h3>Próximos dias</h3>
+            <h3>Proximos dias</h3>
             <div className="forecast-grid">
               {weather.daily.time.slice(1, 5).map((date, index) => {
                 const offset = index + 1
@@ -104,10 +104,10 @@ function WeatherResult({ weather, loading, error }) {
                     <strong>{formatDate(date)}</strong>
                     <p>{dayInfo.label}</p>
                     <div>
-                      <b>{weather.daily.temperature_2m_max[offset].toFixed(1)}°C</b>
-                      <small>máx.</small>
+                      <b>{weather.daily.temperature_2m_max[offset].toFixed(1)}C</b>
+                      <small>max.</small>
                     </div>
-                    <p>Mín: {weather.daily.temperature_2m_min[offset].toFixed(1)}°C</p>
+                    <p>Min: {weather.daily.temperature_2m_min[offset].toFixed(1)}C</p>
                     <p>Precip: {weather.daily.precipitation_sum[offset].toFixed(1)} mm</p>
                     <p>Vento: {weather.daily.wind_speed_10m_max[offset].toFixed(0)} km/h</p>
                   </div>
@@ -119,7 +119,7 @@ function WeatherResult({ weather, loading, error }) {
       )}
 
       {!weather && !loading && !error && (
-        <div className="status">Selecione uma cidade ou use sua localização para começar.</div>
+        <div className="status">Selecione uma cidade ou use sua localizacao para comecar.</div>
       )}
     </section>
   )

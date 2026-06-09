@@ -11,7 +11,7 @@ async function parseJsonResponse(response, fallbackMessage) {
 
 export async function fetchCountries({ signal } = {}) {
   const response = await fetch(COUNTRIES_URL, { signal })
-  const data = await parseJsonResponse(response, 'Erro ao carregar países')
+  const data = await parseJsonResponse(response, 'Erro ao carregar paises')
 
   return data
     .filter((country) => country.name?.common)

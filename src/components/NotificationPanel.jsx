@@ -44,7 +44,7 @@ function formatPhone(value) {
 
 function getAlertPreview(weather, settings, risk) {
   if (!weather?.current || !weather?.daily) {
-    return 'Escolha uma cidade para calcular os alertas disponíveis.'
+    return 'Escolha uma cidade para calcular os alertas disponiveis.'
   }
 
   const alerts = risk.reasons.filter((reason) => {
@@ -58,12 +58,12 @@ function getAlertPreview(weather, settings, risk) {
     const todayMax = weather.daily.temperature_2m_max[0]
     const tomorrowMax = weather.daily.temperature_2m_max[1]
     if (tomorrowMax && todayMax - tomorrowMax >= 6) {
-      alerts.push(`queda de temperatura de ${(todayMax - tomorrowMax).toFixed(1)}°C`)
+      alerts.push(`queda de temperatura de ${(todayMax - tomorrowMax).toFixed(1)}C`)
     }
   }
 
   if (alerts.length === 0 || risk.level === 'safe') {
-    return `Nenhum alerta crítico agora para ${weather.city}.`
+    return `Nenhum alerta critico agora para ${weather.city}.`
   }
 
   return `Alerta ${risk.label.toLowerCase()} para ${weather.city}: ${alerts.join(', ')}.`
@@ -94,11 +94,11 @@ function NotificationPanel({ weather, onSelectLocation }) {
   function handleSubmit(event) {
     event.preventDefault()
     if (!phoneIsValid) {
-      setSavedMessage('Informe um celular válido com DDD.')
+      setSavedMessage('Informe um celular valido com DDD.')
       return
     }
     setSettings((current) => ({ ...current, enabled: true, phone: formatPhone(current.phone) }))
-    setSavedMessage('Preferências salvas neste navegador.')
+    setSavedMessage('Preferencias salvas neste navegador.')
   }
 
   function handleSaveCurrentLocation() {
@@ -133,14 +133,14 @@ function NotificationPanel({ weather, onSelectLocation }) {
       <div className="panel-heading">
         <div>
           <h2>Alertas locais</h2>
-          <p>Configurações salvas no navegador.</p>
+          <p>Configuracoes salvas no navegador.</p>
         </div>
         <span className={`risk-badge risk-${risk.level}`}>{risk.label}</span>
       </div>
 
       <form className="notification-form" onSubmit={handleSubmit}>
         <label>
-          Celular de referência
+          Celular de referencia
           <input
             type="tel"
             inputMode="tel"
@@ -151,11 +151,11 @@ function NotificationPanel({ weather, onSelectLocation }) {
         </label>
 
         <label>
-          Frequência dos avisos
+          Frequencia dos avisos
           <select value={settings.period} onChange={(event) => updateSetting('period', event.target.value)}>
-            <option value="morning">Resumo pela manhã</option>
+            <option value="morning">Resumo pela manha</option>
             <option value="instant">Aviso imediato</option>
-            <option value="twice">Manhã e fim da tarde</option>
+            <option value="twice">Manha e fim da tarde</option>
           </select>
         </label>
 
@@ -182,7 +182,7 @@ function NotificationPanel({ weather, onSelectLocation }) {
               checked={settings.highUv}
               onChange={(event) => updateSetting('highUv', event.target.checked)}
             />
-            Índice UV alto
+            Indice UV alto
           </label>
           <label className="toggle-row">
             <input
@@ -195,7 +195,7 @@ function NotificationPanel({ weather, onSelectLocation }) {
         </div>
 
         <div className={`alert-preview risk-card risk-${risk.level}`}>
-          <span>Prévia do alerta</span>
+          <span>Previa do alerta</span>
           <strong>{alertPreview}</strong>
         </div>
 
@@ -228,7 +228,7 @@ function NotificationPanel({ weather, onSelectLocation }) {
                   <span className={`risk-dot risk-${location.riskLevel}`}>{location.riskLabel}</span>
                 </button>
                 <button type="button" className="icon-button" onClick={() => handleRemoveLocation(location.id)}>
-                  ×
+                  x
                 </button>
               </div>
             ))}

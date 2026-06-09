@@ -23,6 +23,15 @@
   font-size: clamp(2rem, 3vw, 3rem);
 }
 
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .hero p,
 .panel-heading p {
   margin: 0;
@@ -61,6 +70,68 @@
   grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.8fr);
   width: 100%;
   overflow-x: hidden;
+}
+
+.home-layout {
+  display: grid;
+  gap: 20px;
+}
+
+.intro-panel {
+  min-height: 320px;
+  display: grid;
+  align-content: center;
+  background:
+    linear-gradient(120deg, rgba(20, 184, 166, 0.24), rgba(251, 113, 133, 0.16)),
+    var(--panel);
+}
+
+.intro-panel h2 {
+  max-width: 780px;
+  margin: 0 0 14px;
+  font-size: clamp(1.8rem, 3vw, 3.1rem);
+  line-height: 1.08;
+}
+
+.intro-panel p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.intro-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.solution-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.solution-item {
+  min-height: 190px;
+}
+
+.solution-item > span {
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.solution-item h3 {
+  margin: 12px 0 8px;
+}
+
+.solution-item p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .panel {
@@ -372,6 +443,119 @@ button:disabled:hover {
   margin: 0 0 14px;
 }
 
+.route-map {
+  position: relative;
+  height: 270px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.08) 25%, transparent 26%),
+    linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.08) 25%, transparent 26%),
+    var(--soft);
+  background-size: 80px 80px;
+}
+
+.map-node {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  min-width: 78px;
+  min-height: 42px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  color: var(--text);
+  font-weight: 800;
+  text-align: center;
+}
+
+.map-origin {
+  left: 28px;
+  top: 110px;
+  background: var(--primary);
+  color: var(--button-text);
+}
+
+.shelter {
+  right: 30px;
+  top: 28px;
+}
+
+.clinic {
+  right: 42px;
+  top: 132px;
+}
+
+.highground {
+  right: 28px;
+  bottom: 24px;
+}
+
+.map-line {
+  position: absolute;
+  left: 92px;
+  width: calc(100% - 200px);
+  height: 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  transform-origin: left center;
+}
+
+.line-one {
+  top: 114px;
+  transform: rotate(-18deg);
+}
+
+.line-two {
+  top: 136px;
+  background: var(--primary);
+}
+
+.line-three {
+  top: 158px;
+  background: #f59e0b;
+  transform: rotate(15deg);
+}
+
+.help-form {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+
+.help-form .full-field,
+.help-form button {
+  grid-column: 1 / -1;
+}
+
+.route-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.route-list button {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  background: var(--input-bg);
+  color: var(--input-text);
+  text-align: left;
+}
+
+.route-list button span {
+  color: #475569;
+  font-weight: 600;
+}
+
+.route-list .route-active {
+  outline: 3px solid rgba(20, 184, 166, 0.45);
+}
+
 .hourly-slider-wrapper {
   width: 100%;
   max-width: 100%;
@@ -514,6 +698,10 @@ button:disabled:hover {
   .content {
     grid-template-columns: 1fr;
   }
+
+  .solution-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -532,7 +720,8 @@ button:disabled:hover {
   }
 
   .theme-toggle,
-  .notification-actions button {
+  .notification-actions button,
+  .intro-actions button {
     width: 100%;
   }
 
@@ -570,6 +759,34 @@ button:disabled:hover {
 
   .forecast-grid {
     grid-template-columns: 1fr;
+  }
+
+  .help-form {
+    grid-template-columns: 1fr;
+  }
+
+  .route-map {
+    height: 240px;
+  }
+
+  .map-node {
+    min-width: 68px;
+    font-size: 0.82rem;
+  }
+
+  .map-origin {
+    left: 12px;
+  }
+
+  .shelter,
+  .clinic,
+  .highground {
+    right: 12px;
+  }
+
+  .map-line {
+    left: 72px;
+    width: calc(100% - 150px);
   }
 
   .monitored-item {

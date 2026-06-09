@@ -10,6 +10,12 @@ import { formatLocation } from './utils/formatters'
 const LOCATION_STORAGE_KEY = 'weather-site:last-location'
 const THEME_STORAGE_KEY = 'weather-site:theme'
 
+const routeOptions = [
+  { name: 'Abrigo municipal', distance: '2,4 km', status: 'Recebendo familias' },
+  { name: 'Posto de saude', distance: '1,1 km', status: 'Equipe de apoio disponivel' },
+  { name: 'Ponto alto seguro', distance: '850 m', status: 'Rota indicada para alagamento' }
+]
+
 function getStoredLocation() {
   try {
     return JSON.parse(localStorage.getItem(LOCATION_STORAGE_KEY))
@@ -39,8 +45,16 @@ function App() {
   const [coords, setCoords] = useState(null)
   const [locationLabel, setLocationLabel] = useState('')
   const [searchResults, setSearchResults] = useState([])
-  const [activeTab, setActiveTab] = useState('forecast')
+  const [activePage, setActivePage] = useState('home')
   const [theme, setTheme] = useState(getStoredTheme)
+  const [helpForm, setHelpForm] = useState({
+    name: '',
+    people: '1',
+    route: routeOptions[0].name,
+    priority: 'normal',
+    message: ''
+  })
+  const [helpRequest, setHelpRequest] = useState(null)
   const weatherAbortRef = useRef(null)
 
   useEffect(() => {
@@ -70,7 +84,7 @@ function App() {
         }
       } catch (err) {
         if (err.name !== 'AbortError') {
-          setCountryError(err.message || 'Não foi possível carregar países')
+          setCountryError(err.message || 'Nao foi possivel carregar paises')
         }
       } finally {
         setCountryLoading(false)
@@ -137,7 +151,7 @@ function App() {
           lon: location.lon,
           signal: controller.signal
         })
-        const city = locationLabel || selectedLocation?.name || 'Localização atual'
+        const city = locationLabel || selectedLocation?.name || 'Localizacao atual'
 
         setWeather({
           city,
@@ -188,14 +202,14 @@ function App() {
 
   async function handleUseLocation() {
     if (!navigator.geolocation) {
-      setError('Geolocalização não suportada neste navegador.')
+      setError('Geolocalizacao nao suportada neste navegador.')
       return
     }
 
     setLoading(true)
     setError('')
     setSearchResults([])
-    setLocationLabel('Minha localização')
+    setLocationLabel('Minha localizacao')
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -203,7 +217,7 @@ function App() {
       },
       () => {
         setLoading(false)
-        setError('Não foi possível obter sua localização.')
+        setError('Nao foi possivel obter sua localizacao.')
       },
       { enableHighAccuracy: true, timeout: 10000 }
     )
@@ -227,7 +241,7 @@ function App() {
     try {
       const results = await searchCities(query, { signal: controller.signal })
       if (results.length === 0) {
-        throw new Error('Cidade não encontrada')
+        throw new Error('Cidade nao encontrada')
       }
 
       setSearchResults(results)
@@ -262,67 +276,194 @@ function App() {
     setSelectedCity(location.city)
     setLocationLabel(location.city)
     setCoords({ lat: location.lat, lon: location.lon })
-    setActiveTab('forecast')
+    setActivePage('forecast')
   }
 
   function toggleTheme() {
     setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
   }
 
+  function handleHelpChange(event) {
+    const { name, value } = event.target
+    setHelpForm((current) => ({ ...current, [name]: value }))
+  }
+
+  function handleHelpSubmit(event) {
+    event.preventDefault()
+    const protocol = `GS-${Date.now().toString().slice(-6)}`
+    const etaByRoute = {
+      'Abrigo municipal': '18 min',
+      'Posto de saude': '12 min',
+      'Ponto alto seguro': '9 min'
+    }
+
+    setHelpRequest({
+      ...helpForm,
+      protocol,
+      eta: etaByRoute[helpForm.route],
+      status: helpForm.priority === 'urgente' ? 'Prioridade alta enviada' : 'Solicitacao registrada'
+    })
+  }
+
   return (
     <div className="app-shell">
       <header className="hero">
         <div>
-          <h1>Previsão do Tempo</h1>
-          <p>Escolha país, cidade ou use sua localização para ver a previsão.</p>
+          <span className="eyebrow">Global Solution FIAP</span>
+          <h1>AlertaClima</h1>
+          <p>Monitoramento climatico, rotas seguras e pedido de ajuda em um prototipo front-end responsivo.</p>
         </div>
         <button type="button" className="theme-toggle" onClick={toggleTheme}>
           {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
         </button>
       </header>
 
-      <nav className="tabs" aria-label="Área principal">
-        <button
-          type="button"
-          className={activeTab === 'forecast' ? 'tab-active' : ''}
-          onClick={() => setActiveTab('forecast')}
-        >
-          Previsão
+      <nav className="tabs" aria-label="Area principal">
+        <button type="button" className={activePage === 'home' ? 'tab-active' : ''} onClick={() => setActivePage('home')}>
+          Inicio
         </button>
-        <button
-          type="button"
-          className={activeTab === 'notifications' ? 'tab-active' : ''}
-          onClick={() => setActiveTab('notifications')}
-        >
-          Notificações
+        <button type="button" className={activePage === 'forecast' ? 'tab-active' : ''} onClick={() => setActivePage('forecast')}>
+          Previsao
+        </button>
+        <button type="button" className={activePage === 'help' ? 'tab-active' : ''} onClick={() => setActivePage('help')}>
+          Ajuda
         </button>
       </nav>
 
-      <main className="content">
-        <SearchPanel
-          countries={countries}
-          countryLoading={countryLoading}
-          countryError={countryError}
-          selectedCountryCode={selectedCountryCode}
-          selectedCity={selectedCity}
-          cityOptions={cityOptions}
-          customCity={customCity}
-          searchResults={searchResults}
-          loading={loading}
-          onCountryChange={handleCountryChange}
-          onCityChange={handleCityChange}
-          onCustomCityChange={setCustomCity}
-          onUseLocation={handleUseLocation}
-          onSearchCustomCity={handleSearchCustomCity}
-          onSelectSearchResult={handleSelectSearchResult}
-        />
+      {activePage === 'home' && (
+        <main className="home-layout">
+          <section className="panel intro-panel">
+            <span className="eyebrow">Problema</span>
+            <h2>Eventos climaticos extremos chegam rapido e deixam a populacao sem orientacao simples.</h2>
+            <p>
+              Chuvas intensas, ventos fortes e calor extremo podem bloquear vias, atrasar atendimento e dificultar
+              decisoes importantes. A proposta do AlertaClima e reunir previsao, nivel de risco, rotas seguras e
+              comunicacao simulada em uma interface unica.
+            </p>
+            <div className="intro-actions">
+              <button type="button" onClick={() => setActivePage('forecast')}>Ver painel climatico</button>
+              <button type="button" className="button-secondary" onClick={() => setActivePage('help')}>Simular ajuda</button>
+            </div>
+          </section>
 
-        {activeTab === 'forecast' ? (
+          <section className="solution-grid" aria-label="Solucao proposta">
+            <article className="panel solution-item">
+              <span>01</span>
+              <h3>Monitoramento</h3>
+              <p>Consulta por pais, cidade, localizacao atual ou busca manual usando dados meteorologicos.</p>
+            </article>
+            <article className="panel solution-item">
+              <span>02</span>
+              <h3>Alerta visual</h3>
+              <p>Classificacao automatica de risco com chuva, vento, indice UV e condicao atual.</p>
+            </article>
+            <article className="panel solution-item">
+              <span>03</span>
+              <h3>Acao rapida</h3>
+              <p>Simulacao de envio de alerta, selecao de rota segura e registro de pedido de ajuda.</p>
+            </article>
+          </section>
+        </main>
+      )}
+
+      {activePage === 'forecast' && (
+        <main className="content">
+          <SearchPanel
+            countries={countries}
+            countryLoading={countryLoading}
+            countryError={countryError}
+            selectedCountryCode={selectedCountryCode}
+            selectedCity={selectedCity}
+            cityOptions={cityOptions}
+            customCity={customCity}
+            searchResults={searchResults}
+            loading={loading}
+            onCountryChange={handleCountryChange}
+            onCityChange={handleCityChange}
+            onCustomCityChange={setCustomCity}
+            onUseLocation={handleUseLocation}
+            onSearchCustomCity={handleSearchCustomCity}
+            onSelectSearchResult={handleSelectSearchResult}
+          />
           <WeatherResult weather={weather} loading={loading} error={error} />
-        ) : (
+        </main>
+      )}
+
+      {activePage === 'help' && (
+        <main className="content">
+          <section className="panel route-panel">
+            <div className="panel-heading">
+              <div>
+                <h2>Rotas seguras</h2>
+                <p>Selecione o destino mais adequado para a simulacao.</p>
+              </div>
+            </div>
+
+            <div className="route-map" aria-label="Mapa visual de rotas">
+              <span className="map-node map-origin">Voce</span>
+              <span className="map-line line-one" />
+              <span className="map-line line-two" />
+              <span className="map-line line-three" />
+              <span className="map-node shelter">Abrigo</span>
+              <span className="map-node clinic">Saude</span>
+              <span className="map-node highground">Ponto alto</span>
+            </div>
+
+            <form className="help-form" onSubmit={handleHelpSubmit}>
+              <label>
+                Nome
+                <input name="name" value={helpForm.name} onChange={handleHelpChange} placeholder="Nome da pessoa" required />
+              </label>
+              <label>
+                Pessoas afetadas
+                <input name="people" type="number" min="1" max="20" value={helpForm.people} onChange={handleHelpChange} />
+              </label>
+              <label>
+                Rota segura
+                <select name="route" value={helpForm.route} onChange={handleHelpChange}>
+                  {routeOptions.map((route) => (
+                    <option key={route.name} value={route.name}>{route.name}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Prioridade
+                <select name="priority" value={helpForm.priority} onChange={handleHelpChange}>
+                  <option value="normal">Normal</option>
+                  <option value="urgente">Urgente</option>
+                </select>
+              </label>
+              <label className="full-field">
+                Mensagem
+                <input name="message" value={helpForm.message} onChange={handleHelpChange} placeholder="Ex.: rua alagada, energia instavel" />
+              </label>
+              <button type="submit">Enviar pedido simulado</button>
+            </form>
+
+            {helpRequest && (
+              <div className="status status-success">
+                Protocolo {helpRequest.protocol}: {helpRequest.status}. Rota: {helpRequest.route}. Tempo estimado: {helpRequest.eta}.
+              </div>
+            )}
+
+            <div className="route-list">
+              {routeOptions.map((route) => (
+                <button
+                  key={route.name}
+                  type="button"
+                  className={helpForm.route === route.name ? 'route-active' : ''}
+                  onClick={() => setHelpForm((current) => ({ ...current, route: route.name }))}
+                >
+                  <strong>{route.name}</strong>
+                  <span>{route.distance} - {route.status}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
           <NotificationPanel weather={weather} onSelectLocation={handleSelectMonitoredLocation} />
-        )}
-      </main>
+        </main>
+      )}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 export const curatedCities = {
   BR: [
-    { name: 'São Paulo', lat: -23.5505, lon: -46.6333 },
+    { name: 'Sao Paulo', lat: -23.5505, lon: -46.6333 },
     { name: 'Rio de Janeiro', lat: -22.9068, lon: -43.1729 },
     { name: 'Curitiba', lat: -25.4284, lon: -49.2733 }
   ],
@@ -15,7 +15,7 @@ export const curatedCities = {
     { name: 'Faro', lat: 37.0194, lon: -7.9304 }
   ],
   JP: [
-    { name: 'Tóquio', lat: 35.6895, lon: 139.6917 },
+    { name: 'Toquio', lat: 35.6895, lon: 139.6917 },
     { name: 'Osaka', lat: 34.6937, lon: 135.5023 },
     { name: 'Quioto', lat: 35.0116, lon: 135.7681 }
   ],
@@ -25,7 +25,7 @@ export const curatedCities = {
     { name: 'Lyon', lat: 45.7640, lon: 4.8357 }
   ],
   IN: [
-    { name: 'Nova Déli', lat: 28.6139, lon: 77.2090 },
+    { name: 'Nova Deli', lat: 28.6139, lon: 77.2090 },
     { name: 'Mumbai', lat: 19.0760, lon: 72.8777 },
     { name: 'Bengaluru', lat: 12.9716, lon: 77.5946 }
   ],

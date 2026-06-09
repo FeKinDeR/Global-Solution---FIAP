@@ -10,6 +10,7 @@
   --input-text: #0f172a;
   --primary: #38bdf8;
   --primary-hover: #7dd3fc;
+  --accent: #fb7185;
   --button-text: #0f172a;
   --soft: rgba(255, 255, 255, 0.05);
 }
@@ -26,6 +27,7 @@ body[data-theme='light'] {
   --input-text: #0f172a;
   --primary: #0284c7;
   --primary-hover: #0369a1;
+  --accent: #be123c;
   --button-text: #ffffff;
   --soft: rgba(15, 23, 42, 0.04);
 }

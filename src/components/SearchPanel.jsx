@@ -19,12 +19,12 @@ function SearchPanel({
 }) {
   return (
     <section className="panel search-panel">
-      <h2>Menu de seleção</h2>
+      <h2>Menu de selecao</h2>
       {countryError && <div className="status status-error">{countryError}</div>}
 
       <div className="inputs-row">
         <label>
-          País
+          Pais
           <select value={selectedCountryCode} onChange={onCountryChange} disabled={countryLoading}>
             {countries.map((country) => (
               <option key={country.cca2} value={country.cca2}>
@@ -47,7 +47,7 @@ function SearchPanel({
       </div>
 
       <button type="button" className="button-primary" onClick={onUseLocation} disabled={loading}>
-        Usar minha localização
+        Usar minha localizacao
       </button>
 
       <form onSubmit={onSearchCustomCity} className="search-form">
@@ -70,7 +70,7 @@ function SearchPanel({
           {searchResults.map((result) => (
             <button key={result.id} type="button" onClick={() => onSelectSearchResult(result)}>
               <span>{formatLocation(result)}</span>
-              <small>{countryFlag(result.country_code)} {result.population ? `${result.population.toLocaleString('pt-BR')} hab.` : 'Local disponível'}</small>
+              <small>{countryFlag(result.country_code)} {result.population ? `${result.population.toLocaleString('pt-BR')} hab.` : 'Local disponivel'}</small>
             </button>
           ))}
         </div>

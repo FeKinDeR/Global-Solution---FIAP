@@ -4,7 +4,7 @@ export function calculateWeatherRisk(weather) {
       level: 'neutral',
       label: 'Sem dados',
       score: 0,
-      reasons: ['Escolha uma cidade para calcular o risco climático.']
+      reasons: ['Escolha uma cidade para calcular o risco climatico.']
     }
   }
 
@@ -54,13 +54,13 @@ export function calculateWeatherRisk(weather) {
     return { level: 'danger', label: 'Alerta', score, reasons }
   }
   if (score >= 2) {
-    return { level: 'warning', label: 'Atenção', score, reasons }
+    return { level: 'warning', label: 'Atencao', score, reasons }
   }
   return {
     level: 'safe',
     label: 'Normal',
     score,
-    reasons: reasons.length ? reasons : ['sem risco climático relevante no momento']
+    reasons: reasons.length ? reasons : ['sem risco climatico relevante no momento']
   }
 }
 
@@ -71,5 +71,5 @@ export function buildDailySummary(weather, info, risk) {
   const min = weather.daily.temperature_2m_min[0].toFixed(1)
   const rain = weather.daily.precipitation_sum[0].toFixed(1)
 
-  return `Hoje em ${weather.city}: ${weather.current.temperature_2m.toFixed(1)}°C agora, ${info.label.toLowerCase()}, máxima de ${max}°C, mínima de ${min}°C e ${rain} mm de chuva. Status: ${risk.label.toLowerCase()}.`
+  return `Hoje em ${weather.city}: ${weather.current.temperature_2m.toFixed(1)}C agora, ${info.label.toLowerCase()}, maxima de ${max}C, minima de ${min}C e ${rain} mm de chuva. Status: ${risk.label.toLowerCase()}.`
 }

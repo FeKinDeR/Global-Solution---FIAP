@@ -6,6 +6,7 @@ const LOCATIONS_STORAGE_KEY = 'weather-site:monitored-locations'
 
 const defaultSettings = {
   phone: '',
+  channel: 'whatsapp',
   enabled: false,
   severeRain: true,
   strongWind: true,
@@ -43,8 +44,14 @@ function formatPhone(value) {
 }
 
 function getAlertPreview(weather, settings, risk) {
+  const channelLabel = {
+    whatsapp: 'WhatsApp',
+    sms: 'SMS',
+    both: 'WhatsApp e SMS'
+  }[settings.channel]
+
   if (!weather?.current || !weather?.daily) {
-    return 'Escolha uma cidade para calcular os alertas disponiveis.'
+    return `Cadastre o telefone para receber alertas por ${channelLabel}.`
   }
 
   const alerts = risk.reasons.filter((reason) => {
@@ -63,10 +70,10 @@ function getAlertPreview(weather, settings, risk) {
   }
 
   if (alerts.length === 0 || risk.level === 'safe') {
-    return `Nenhum alerta critico agora para ${weather.city}.`
+    return `Nenhum alerta critico agora para ${weather.city}. O canal escolhido e ${channelLabel}.`
   }
 
-  return `Alerta ${risk.label.toLowerCase()} para ${weather.city}: ${alerts.join(', ')}.`
+  return `Envio por ${channelLabel}: alerta ${risk.label.toLowerCase()} para ${weather.city}: ${alerts.join(', ')}.`
 }
 
 function NotificationPanel({ weather, onSelectLocation }) {
@@ -77,6 +84,11 @@ function NotificationPanel({ weather, onSelectLocation }) {
   const phoneIsValid = cleanPhone(settings.phone).length >= 10
   const risk = useMemo(() => calculateWeatherRisk(weather), [weather])
   const alertPreview = useMemo(() => getAlertPreview(weather, settings, risk), [weather, settings, risk])
+  const channelLabel = {
+    whatsapp: 'WhatsApp',
+    sms: 'SMS',
+    both: 'WhatsApp e SMS'
+  }[settings.channel]
 
   useEffect(() => {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings))
@@ -98,7 +110,7 @@ function NotificationPanel({ weather, onSelectLocation }) {
       return
     }
     setSettings((current) => ({ ...current, enabled: true, phone: formatPhone(current.phone) }))
-    setSavedMessage('Preferencias salvas neste navegador.')
+    setSavedMessage(`Cadastro salvo. Alertas simulados serao enviados por ${channelLabel}.`)
   }
 
   function handleSaveCurrentLocation() {
@@ -132,15 +144,15 @@ function NotificationPanel({ weather, onSelectLocation }) {
     <section className="panel notification-panel">
       <div className="panel-heading">
         <div>
-          <h2>Alertas locais</h2>
-          <p>Configuracoes salvas no navegador.</p>
+          <h2>Cadastro de alertas</h2>
+          <p>Receba avisos simulados por WhatsApp ou SMS.</p>
         </div>
         <span className={`risk-badge risk-${risk.level}`}>{risk.label}</span>
       </div>
 
       <form className="notification-form" onSubmit={handleSubmit}>
         <label>
-          Celular de referencia
+          Telefone para contato
           <input
             type="tel"
             inputMode="tel"
@@ -148,6 +160,15 @@ function NotificationPanel({ weather, onSelectLocation }) {
             onChange={(event) => updateSetting('phone', formatPhone(event.target.value))}
             placeholder="(11) 99999-9999"
           />
+        </label>
+
+        <label>
+          Canal de envio
+          <select value={settings.channel} onChange={(event) => updateSetting('channel', event.target.value)}>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="sms">SMS</option>
+            <option value="both">WhatsApp e SMS</option>
+          </select>
         </label>
 
         <label>
@@ -200,7 +221,7 @@ function NotificationPanel({ weather, onSelectLocation }) {
         </div>
 
         <div className="notification-actions">
-          <button type="submit">Salvar alertas</button>
+          <button type="submit">Cadastrar telefone</button>
           <button type="button" className="button-secondary" onClick={() => updateSetting('enabled', false)}>
             Pausar
           </button>
@@ -212,7 +233,7 @@ function NotificationPanel({ weather, onSelectLocation }) {
 
       {savedMessage && <div className="status">{savedMessage}</div>}
       {settings.enabled && phoneIsValid && (
-        <div className="status status-success">Alertas locais ativos para {settings.phone}.</div>
+        <div className="status status-success">Alertas ativos por {channelLabel} para {settings.phone}.</div>
       )}
 
       <div className="monitored-section">

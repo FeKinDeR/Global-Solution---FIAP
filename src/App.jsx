@@ -328,6 +328,9 @@ function App() {
         <button type="button" className={activePage === 'help' ? 'tab-active' : ''} onClick={() => setActivePage('help')}>
           Ajuda
         </button>
+        <button type="button" className={activePage === 'alerts' ? 'tab-active' : ''} onClick={() => setActivePage('alerts')}>
+          Alertas
+        </button>
       </nav>
 
       {activePage === 'home' && (
@@ -343,6 +346,7 @@ function App() {
             <div className="intro-actions">
               <button type="button" onClick={() => setActivePage('forecast')}>Ver painel climatico</button>
               <button type="button" className="button-secondary" onClick={() => setActivePage('help')}>Simular ajuda</button>
+              <button type="button" className="button-secondary" onClick={() => setActivePage('alerts')}>Cadastrar alertas</button>
             </div>
           </section>
 
@@ -390,7 +394,7 @@ function App() {
       )}
 
       {activePage === 'help' && (
-        <main className="content">
+        <main className="content help-content">
           <section className="panel route-panel">
             <div className="panel-heading">
               <div>
@@ -460,7 +464,11 @@ function App() {
               ))}
             </div>
           </section>
+        </main>
+      )}
 
+      {activePage === 'alerts' && (
+        <main className="alerts-layout">
           <NotificationPanel weather={weather} onSelectLocation={handleSelectMonitoredLocation} />
         </main>
       )}
